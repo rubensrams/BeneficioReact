@@ -2,8 +2,10 @@ import React, { useState, useRef } from 'react';
 import Captcha from './Captcha';
 import InputFecha from './InputFecha';
 import { useNavigate } from 'react-router-dom';
+import { ServicioBenefico } from '../servicios/ServicioBenefico';
 
 export const Formulario = () => {
+   
     const captchaRef = useRef(null);
     const [aceptoPrivacidad, setAceptoPrivacidad] = useState(false);
     const [opcionSeleccionada, setOpcionSeleccionada] = useState(null);
@@ -19,6 +21,10 @@ export const Formulario = () => {
     const [errorPrivacidad, setErrorPrivacidad] = useState('');
     const [errorCaptcha, setErrorCaptcha] = useState('');
     const [errorFecha, setErrorFecha] = useState(false);
+    
+    // Estados para la API
+    const [cargando, setCargando] = useState(false);
+    const [errorApi, setErrorApi] = useState('');
 
     const nombreValue = useRef();
     const fechaValue = useRef();
@@ -86,7 +92,7 @@ export const Formulario = () => {
        
     };
 
-    const consultarBeneficio = (e) => {
+    const consultarBeneficio = async (e) => {
         e.preventDefault();
         
         // Solo navegar si todas las validaciones pasan
@@ -95,19 +101,34 @@ export const Formulario = () => {
             return;
         }
         
-        console.log(nombreValue.current.value);
-        console.log(fechaValue.current.value);
-        console.log(nssValue.current.value);
-        console.log(creditoValue.current.value);
-        navegar('/caso01', {
-            state: { 
-                nombre: nombreValue.current.value,
-                fecha: fechaValue.current.value,
-                nss: nssValue.current.value,
-                credito: creditoValue.current.value,
-                opcion: opcionSeleccionada
-            }
-        });
+        setCargando(true);
+        setErrorApi('');
+        
+        try {
+            let datosRespuesta;
+            
+                datosRespuesta = await ServicioBenefico.consultarWSBeneficio(
+                    opcionSeleccionada,
+                    nombre,
+                    fecha,
+                    nss,
+                    credito
+                )
+                
+            // Navegar a Caso01 con los datos de la respuesta del backend
+            navegar('/caso01', {
+                state: { 
+                    ...datosRespuesta
+                }
+            });
+            
+        } catch (error) {
+                console.error('Error completo:', error);
+                setErrorApi('Error al consultar el beneficio. Por favor intenta nuevamente.');
+            
+        } finally {
+            setCargando(false);
+        }
     }
 
 
@@ -273,6 +294,13 @@ export const Formulario = () => {
                             )}
                         </div>
                     </div>
+                    {errorApi && (
+                        <div className="row justify-content-center">
+                            <div className="col-10 col-md-7 text-center">
+                                    <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorApi}</p>
+                            </div>
+                        </div>
+                    )}
                     <div className="row mt-2 mb-4 justify-content-center">
                         {!opcionSeleccionada && errorInputs && (
                             <div className="col-12 text-center mb-2">
@@ -282,9 +310,10 @@ export const Formulario = () => {
                         <div className="col-10 col-md-3">
                             <button 
                                 type="submit" 
-                                className="btn btn-danger button-rojo btn-block mt-4" 
+                                className="btn btn-danger button-rojo btn-block mt-4"
+                                disabled={cargando}
                             >
-                                Buscar
+                                {cargando ? 'Buscando...' : 'Buscar'}
                             </button>
                         </div>
                         <div className="col-12 mt-4">

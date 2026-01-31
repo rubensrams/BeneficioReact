@@ -6,8 +6,15 @@ export const Caso01 = () => {
     const navegar = useNavigate();
     const location = useLocation();
     
-    // Recibir los parámetros del state
-    const { nombre, fecha, nss, credito, opcion } = location.state || {};
+    // Recibir los parámetros del state (formulario) y datos de la API
+    const { 
+        nombre,        // Datos que vienen del backend:
+        numeroCredito,
+        fechaCongelacion,
+        saldoAntes,
+        saldoDespues,
+        fechaAplicacion
+    } = location.state || {};
 
    const regresar = () => {
            navegar('/');  
@@ -21,7 +28,7 @@ export const Caso01 = () => {
 					<div className="col-12 mb-2 text-center">
 						<h3><div className="bold rojo mt-5">¡Felicidades {nombre}! </div></h3>
 						<h5 className="">
-							<div>Además de que tu crédito <span className="bold">******7085</span> fue congelado en noviembre 2024, ahora gracias al programa:</div>
+							<div>Además de que tu crédito <span className="bold">{numeroCredito || '******7085'}</span> fue congelado en {fechaCongelacion || 'noviembre 2024'}, ahora gracias al programa:</div>
 						</h5>
 					</div>
 					<div className="col-9 col-md-3">
@@ -45,7 +52,7 @@ export const Caso01 = () => {
 											<tbody>
 												<tr>
 													<td className="text-left">Saldo</td>
-													<td><div className="text-right bold">$ 439,586.03</div></td>
+													<td><div className="text-right bold">$ {saldoAntes || '439,586.03'}</div></td>
 												</tr>
 											</tbody>
 										</table>
@@ -70,7 +77,7 @@ export const Caso01 = () => {
 													<td className="text-left">
 														Saldo
 													</td>
-													<td><div className="text-right bold">$ 438,373.96</div></td>
+													<td><div className="text-right bold">$ {saldoDespues || '438,373.96'}</div></td>
 												</tr>
 											</tbody>
 										</table>
@@ -82,7 +89,7 @@ export const Caso01 = () => {
 					</div>
 					<div className="col-12 text-center mt-4">
 						<p>
-							<label className="rojo-claro" text="Fecha de Aplicación: 01/01/2024" />
+							<label className="rojo-claro">{`Fecha de Aplicación: ${fechaAplicacion || '01/01/2024'}`}</label>
 						</p>
 					</div>
 					<div className="col-12 text-center mt-2  ">
