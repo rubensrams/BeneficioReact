@@ -1,10 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
-import Formulario from './componentes/Formulario';
+import { Rutas } from './rutas/Rutas';
 
 function App() {
   return (
-    <Formulario />
+    <Rutas />
   );
 }
 
