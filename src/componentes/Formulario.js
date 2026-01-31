@@ -26,10 +26,6 @@ export const Formulario = () => {
     const [cargando, setCargando] = useState(false);
     const [errorApi, setErrorApi] = useState('');
 
-    const nombreValue = useRef();
-    const fechaValue = useRef();
-    const nssValue = useRef();
-    const creditoValue = useRef();
 
     const navegar = useNavigate();
 
@@ -172,7 +168,7 @@ export const Formulario = () => {
                                                         setNombre(e.target.value);
                                                         setErrorInputs('');
                                                     }}
-                                                    ref={nombreValue}
+   
                                                 />
                                             </div>
                                             <div className="col-12 col-md-3">
@@ -188,7 +184,7 @@ export const Formulario = () => {
                                                         setErrorFecha(false);
                                                     }}
                                                     onError={setErrorFecha}
-                                                    ref={fechaValue}
+
                                                 />
                                                 {errorFecha && opcionSeleccionada === '1' && (
                                                     <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>Fecha inválida</p>
@@ -225,7 +221,7 @@ export const Formulario = () => {
                                                 setNss(e.target.value);
                                                 setErrorInputs('');
                                             }}
-                                            ref={nssValue}
+
                                         />
                                         {opcionSeleccionada === '2' && errorInputs && (
                                             <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorInputs}</p>
@@ -258,7 +254,6 @@ export const Formulario = () => {
                                                 setCredito(e.target.value);
                                                 setErrorInputs('');
                                             }}
-                                            ref={creditoValue}
                                         />
                                         {opcionSeleccionada === '3' && errorInputs && (
                                             <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorInputs}</p>
