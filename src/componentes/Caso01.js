@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
+import { formatearMoneda } from '../helper/HelperBeneficio';
 
 export const Caso01 = () => {
 
@@ -8,7 +9,7 @@ export const Caso01 = () => {
     
     // Recibir los parámetros del state (formulario) y datos de la API
     const { 
-        nombre,        // Datos que vienen del backend:
+        nombre,
         numeroCredito,
         fechaCongelacion,
         saldoAntes,
@@ -52,7 +53,7 @@ export const Caso01 = () => {
 											<tbody>
 												<tr>
 													<td className="text-left">Saldo</td>
-													<td><div className="text-right bold">$ {saldoAntes || '439,586.03'}</div></td>
+													<td><div className="text-right bold">$ {formatearMoneda(saldoAntes)}</div></td>
 												</tr>
 											</tbody>
 										</table>
@@ -77,7 +78,7 @@ export const Caso01 = () => {
 													<td className="text-left">
 														Saldo
 													</td>
-													<td><div className="text-right bold">$ {saldoDespues || '438,373.96'}</div></td>
+													<td><div className="text-right bold">$ {formatearMoneda(saldoDespues)}</div></td>
 												</tr>
 											</tbody>
 										</table>
@@ -88,16 +89,14 @@ export const Caso01 = () => {
 						</div>
 					</div>
 					<div className="col-12 text-center mt-4">
-						<p>
-							<label className="rojo-claro">{`Fecha de Aplicación: ${fechaAplicacion || '01/01/2024'}`}</label>
-						</p>
+						<p className="rojo-claro">La información corresponde a la fecha de aplicación del programa.</p>
 					</div>
 					<div className="col-12 text-center mt-2  ">
 						<p className="fuente-montserrat_css">
 							Para conocer los siguientes pasos, y obtener tu Carta de
 							Instrucción de Cancelación de Hipoteca, ingresa a
 							<a style={{textDecoration: 'underline'}} href="https://micuenta.infonavit.org.mx/"
-								target="_blank">Mi Cuenta Infonavit</a>
+								target="_blank"> Mi Cuenta Infonavit</a>
 							, sección Mi Crédito.
 						</p>
 					</div>

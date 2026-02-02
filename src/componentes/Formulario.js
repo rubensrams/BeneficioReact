@@ -103,7 +103,7 @@ export const Formulario = () => {
         try {
             let datosRespuesta;
             
-                datosRespuesta = await ServicioBenefico.consultarWSBeneficio(
+                datosRespuesta = await ServicioBenefico.consultarWSBeneficioDesa(
                     opcionSeleccionada,
                     nombre,
                     fecha,
@@ -113,9 +113,7 @@ export const Formulario = () => {
                 
             // Navegar a Caso01 con los datos de la respuesta del backend
             navegar('/caso01', {
-                state: { 
-                    ...datosRespuesta
-                }
+                state: datosRespuesta
             });
             
         } catch (error) {
