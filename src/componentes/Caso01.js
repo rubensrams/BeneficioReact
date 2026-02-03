@@ -13,8 +13,7 @@ export const Caso01 = () => {
         numeroCredito,
         fechaCongelacion,
         saldoAntes,
-        saldoDespues,
-        fechaAplicacion
+        saldoDespues
     } = location.state || {};
 
    const regresar = () => {

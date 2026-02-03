@@ -21,6 +21,10 @@ export const transformarRespuestaBeneficio = (response) => {
   const data = Array.isArray(response) ? response[0] : response;
   
   return {
+    // Campos de control de respuesta (solo vienen cuando no hay información)
+    codigo: data?.CODIGO || '',
+    mensaje: data?.MENSAJE || '',
+    // Datos del beneficio
     nombre: data?.tx_Nombre_Pila || data?.tx_Nombre_Mascara || '',
     numeroCredito: data?.credito || '',
     fechaCongelacion: data?.fecha_Congelacion || data?.fechaCongelacion || '',
@@ -39,6 +43,35 @@ export const transformarRespuestaBeneficio = (response) => {
     agrupadorEscenario: data?.tx_Agrupador_Escenario || '',
     grupo: data?.grupo || ''
   };
+};
+
+/**
+ * Construye el objeto request según la opción seleccionada
+ * @param {string|number} opcion - Opción de búsqueda ('1': nombre y fecha, '2': NSS, '3': crédito)
+ * @param {string} nombre - Nombre del beneficiario
+ * @param {string} fecha - Fecha de nacimiento en formato dd/mm/aaaa
+ * @param {string} nss - Número de Seguridad Social
+ * @param {string} credito - Número de crédito
+ * @returns {Object} Objeto request con los campos correspondientes
+ */
+export const construirRequestBeneficio = (opcion, nombre, fecha, nss, credito) => {
+  if (opcion === '1') {
+    // Convertir fecha de formato dd/mm/aaaa a dd.mm.aaaa
+    const fechaFormateada = fecha ? fecha.replace(/\//g, '.') : "";
+    return {
+      IP_NOMBRE: nombre || "",
+      IP_FH_NACIMIENTO: fechaFormateada
+    };
+  } else if (opcion === '2') {
+    return {
+      IP_NSS: nss || ""
+    };
+  } else if (opcion === '3') {
+    return {
+      IP_CREDITO: credito || ""
+    };
+  }
+  return {};
 };
 
 /**

@@ -3,6 +3,7 @@ import Captcha from './Captcha';
 import InputFecha from './InputFecha';
 import { useNavigate } from 'react-router-dom';
 import { ServicioBenefico } from '../servicios/ServicioBenefico';
+import { PanelCarga } from './PanelCarga';
 
 export const Formulario = () => {
    
@@ -21,6 +22,8 @@ export const Formulario = () => {
     const [errorPrivacidad, setErrorPrivacidad] = useState('');
     const [errorCaptcha, setErrorCaptcha] = useState('');
     const [errorFecha, setErrorFecha] = useState(false);
+    const [errorNss, setErrorNss] = useState('');
+    const [errorCredito, setErrorCredito] = useState('');
     
     // Estados para la API
     const [cargando, setCargando] = useState(false);
@@ -32,6 +35,24 @@ export const Formulario = () => {
     const handleRadioChange = (opcion) => {
         setOpcionSeleccionada(opcion);
         setErrorInputs('');
+        setErrorNss('');
+        setErrorCredito('');
+        
+        // Limpiar los inputs de las otras opciones
+        if (opcion === '1') {
+            setNss('');
+            setCredito('');
+        } else if (opcion === '2') {
+            setNombre('');
+            setFecha('');
+            setCredito('');
+            setErrorFecha(false);
+        } else if (opcion === '3') {
+            setNombre('');
+            setFecha('');
+            setNss('');
+            setErrorFecha(false);
+        }
     };
 
     const handleSubmit = () => {
@@ -99,8 +120,8 @@ export const Formulario = () => {
         
         setCargando(true);
         setErrorApi('');
-        
-        try {
+        navegar('/sinbeneficio');
+        /*try {
             let datosRespuesta;
             
                 datosRespuesta = await ServicioBenefico.consultarWSBeneficioDesa(
@@ -110,19 +131,25 @@ export const Formulario = () => {
                     nss,
                     credito
                 )
-                
-            // Navegar a Caso01 con los datos de la respuesta del backend
-            navegar('/caso01', {
-                state: datosRespuesta
-            });
+
+             if(datosRespuesta.codigo==='00'){
+                //Navegar a datos no encontrados
+                navegar('/sinbeneficio');
+             } else{  
+                // Navegar a Caso01 con los datos de la respuesta del backend
+                navegar('/caso01', {
+                    state: datosRespuesta
+                });
+            }
             
         } catch (error) {
                 console.error('Error completo:', error);
                 setErrorApi('Error al consultar el beneficio. Por favor intenta nuevamente.');
+                 setCargando(false);
             
         } finally {
             setCargando(false);
-        }
+        }*/
     }
 
 
@@ -163,8 +190,12 @@ export const Formulario = () => {
                                                     disabled={opcionSeleccionada !== '1'}
                                                     value={nombre}
                                                     onChange={(e) => {
-                                                        setNombre(e.target.value);
-                                                        setErrorInputs('');
+                                                        const valor = e.target.value;
+                                                        // Solo permite letras y espacios
+                                                        if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(valor)) {
+                                                            setNombre(valor);
+                                                            setErrorInputs('');
+                                                        }
                                                     }}
    
                                                 />
@@ -216,13 +247,28 @@ export const Formulario = () => {
                                             disabled={opcionSeleccionada !== '2'}
                                             value={nss}
                                             onChange={(e) => {
-                                                setNss(e.target.value);
-                                                setErrorInputs('');
+                                                const valor = e.target.value;
+                                                // Solo permite números y máximo 11 dígitos
+                                                if (/^\d*$/.test(valor) && valor.length <= 11) {
+                                                    setNss(valor);
+                                                    setErrorInputs('');
+                                                    setErrorNss('');
+                                                }
                                             }}
-
+                                            onBlur={() => {
+                                                if (nss.length > 0 && nss.length < 11) {
+                                                    setErrorNss('Nss inválido');
+                                                } else {
+                                                    setErrorNss('');
+                                                }
+                                            }}
+                                            maxLength={11}
                                         />
                                         {opcionSeleccionada === '2' && errorInputs && (
                                             <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorInputs}</p>
+                                        )}
+                                        {errorNss && opcionSeleccionada === '2' && (
+                                            <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorNss}</p>
                                         )}
                                     </div>
                                 </div>
@@ -249,12 +295,28 @@ export const Formulario = () => {
                                             disabled={opcionSeleccionada !== '3'}
                                             value={credito}
                                             onChange={(e) => {
-                                                setCredito(e.target.value);
-                                                setErrorInputs('');
+                                                const valor = e.target.value;
+                                                // Solo permite números y máximo 10 dígitos
+                                                if (/^\d*$/.test(valor) && valor.length <= 10) {
+                                                    setCredito(valor);
+                                                    setErrorInputs('');
+                                                    setErrorCredito('');
+                                                }
                                             }}
+                                            onBlur={() => {
+                                                if (credito.length > 0 && credito.length < 10) {
+                                                    setErrorCredito('Crédito Inválido');
+                                                } else {
+                                                    setErrorCredito('');
+                                                }
+                                            }}
+                                            maxLength={10}
                                         />
                                         {opcionSeleccionada === '3' && errorInputs && (
                                             <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorInputs}</p>
+                                        )}
+                                        {errorCredito && opcionSeleccionada === '3' && (
+                                            <p style={{ fontFamily: 'Arial', fontSize: '12px', fontWeight: 'bold', color: 'red', marginTop: '5px', marginBottom: 0 }}>{errorCredito}</p>
                                         )}
                                     </div>
                                 </div>
@@ -301,13 +363,17 @@ export const Formulario = () => {
                             </div>
                         )}
                         <div className="col-10 col-md-3">
-                            <button 
-                                type="submit" 
-                                className="btn btn-danger button-rojo btn-block mt-4"
-                                disabled={cargando}
-                            >
-                                {cargando ? 'Buscando...' : 'Buscar'}
-                            </button>
+                            {!cargando && (
+                                    <button 
+                                    type="submit" 
+                                    className="btn btn-danger button-rojo btn-block mt-4"
+                                >
+                                    Buscar
+                                </button>
+                                )}                          
+                            {cargando && (
+                                    <PanelCarga />
+                            )}
                         </div>
                         <div className="col-12 mt-4">
                             <hr/>

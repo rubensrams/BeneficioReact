@@ -1,5 +1,5 @@
 import { post } from './HttpService';
-import { getBasicAuthHeader, transformarRespuestaBeneficio } from '../helper/HelperBeneficio';
+import { getBasicAuthHeader, transformarRespuestaBeneficio, construirRequestBeneficio } from '../helper/HelperBeneficio';
 
 const DIRECT_URL = 'https://091402bq105.prfd.infonavit.net:4320/INFONAVIT/public/MCI/XS/PostISI.xsjs';
 
@@ -14,15 +14,12 @@ export const ServicioBenefico = {
   consultarWSBeneficioDesa: async (opcion, nombre, fecha, nss, credito) => {
     console.log('Consultando vía proxy:', { opcion, nombre, fecha, nss, credito });
     try {
-      const response = await post('/PostISI.xsjs', {
-        //IP_NOMBRE: nombre || "",
-        //IP_FH_NACIMIENTO: fecha || "",
-        //IP_NSS: nss || "",
-        IP_CREDITO: credito
-      });
+      const requestBody = construirRequestBeneficio(opcion, nombre, fecha, nss, credito);
+      console.log('Cuerpo de la solicitud:', requestBody);
+      const response = await post('/PostISI.xsjs', requestBody);
       const resp = await response.json();
       console.log('Respuesta original:', resp);
-      
+
       const datosTransformados = transformarRespuestaBeneficio(resp);
       
       console.log('Respuesta transformada:', datosTransformados);
@@ -41,18 +38,14 @@ export const ServicioBenefico = {
     console.log('Consultando directamente (sin proxy):', { opcion, nombre, fecha, nss, credito });
     
     try {
+      const requestBody = construirRequestBeneficio(opcion, nombre, fecha, nss, credito);
       const response = await fetch(DIRECT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': getBasicAuthHeader()
         },
-        body: JSON.stringify({
-          IP_NOMBRE: nombre || "",
-          IP_FH_NACIMIENTO: fecha || "",
-          IP_NSS: nss || "",
-          IP_CREDITO: credito || ""
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
