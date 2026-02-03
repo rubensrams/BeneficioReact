@@ -32,7 +32,7 @@ export const Caso01 = () => {
 						</h5>
 					</div>
 					<div className="col-9 col-md-3">
-						<img className="img-fluid" src="/imas/logo-solucion-integral.png" alt="Solución Integral"/>
+						<img className="img-fluid" src="./imas/logo-solucion-integral.png" alt="Solución Integral"/>
 					</div>
 					<div className="col-12 mt-5">
 						<div className="row justify-content-center">
